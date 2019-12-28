@@ -16,17 +16,24 @@ public class CartActivity extends AppCompatActivity {
 
     public Button shopButton;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        shopButton = (Button) findViewById(R.id.shopButton);
+        shopButton = findViewById(R.id.shopButton);
         shopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                startActivity(intent);
+                try {
+                    Intent intent = new Intent(CartActivity.this, CameraActivity.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
