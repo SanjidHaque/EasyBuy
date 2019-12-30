@@ -160,6 +160,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         productPriceInString = productPrice + "$";
       }
 
+
       String product = productName + " " + productPriceInString;
       Products.add(product);
       ProductsAdapter.notifyDataSetChanged();
