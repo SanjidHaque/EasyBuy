@@ -13,8 +13,11 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.tensorflow.lite.examples.detection.customview.OverlayView;
@@ -66,8 +69,29 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private BorderedText borderedText;
 
+  //
+    ArrayList<String> ProductNames = new ArrayList<String>(){{
+      add("Laptop");
+      add("Mobile");
+      add("Tablet");
+      add("Keyboard");
+
+  }};
+
+    ListView ProductNamesListView;
+    ArrayAdapter Adapter;
+
+  //
+
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
+
+    //
+    ProductNamesListView = findViewById(R.id.productNamesListView);
+    Adapter = new ArrayAdapter(this,android.R.layout.simple_dropdown_item_1line,ProductNames);
+    ProductNamesListView.setAdapter(Adapter);
+    //
+
     final float textSizePx =
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
@@ -163,6 +187,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             LOGGER.i("Running detection on image " + currTimestamp);
             final long startTime = SystemClock.uptimeMillis();
             final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
+
+            //
+            ProductNames.add(results.get(0).getTitle());
+            //Adapter.notifyDataSetChanged();
+            //
+
             lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
             cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
