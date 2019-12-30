@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import org.tensorflow.lite.examples.detection.customview.OverlayView;
 import org.tensorflow.lite.examples.detection.customview.OverlayView.DrawCallback;
@@ -62,34 +61,24 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
 
 
-  ArrayList<String> ProductNames = new ArrayList<String>();
-  ArrayList<Integer> ProductPrices = new ArrayList<Integer>();
+  ArrayList<String> Products = new ArrayList<String>();
 
-  ListView ProductNamesListView;
-  ListView ProductPricesListView;
+  ListView ProductListView;
 
-  ArrayAdapter ProductNamesAdapter;
-  ArrayAdapter ProductPricesAdapter;
-
-
+  ArrayAdapter ProductsAdapter;
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
 
-    ProductNamesListView = findViewById(R.id.productNamesListView);
-    ProductPricesListView = findViewById(R.id.productPriceListView);
+    ProductListView = findViewById(R.id.productNamesListView);
 
-    ProductNamesAdapter = new ArrayAdapter<String>(
+    ProductsAdapter = new ArrayAdapter<String>(
             this,
             android.R.layout.simple_dropdown_item_1line,
-            ProductNames);
-    ProductPricesAdapter = new ArrayAdapter<Integer>(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            ProductPrices);
+            Products);
 
-    ProductNamesListView.setAdapter(ProductNamesAdapter);
-    ProductPricesListView.setAdapter(ProductPricesAdapter);
+
+    ProductListView.setAdapter(ProductsAdapter);
 
     final float textSizePx =
         TypedValue.applyDimension(
@@ -158,15 +147,20 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private void addNewProduct(String productName) {
     runOnUiThread(() -> {
 
-      if(ProductNames.contains(productName)){
+      if(Products.contains(productName)){
         return;
       }
 
-      ProductNames.add(productName);
-      ProductNamesAdapter.notifyDataSetChanged();
-      int productPrice = (int) (Math.random() * (10000 - 500));
-      ProductPrices.add(productPrice);
-      ProductPricesAdapter.notifyDataSetChanged();
+      int productPrice = ((int) (Math.random() * (10000 - 500)) );
+
+      String productPriceInString = String.valueOf(productPrice);
+      String product = productName + " " + productPriceInString;
+
+      Products.add(product);
+      ProductsAdapter.notifyDataSetChanged();
+
+      Toast.makeText(getApplicationContext(),productName+" is added to cart.",Toast.LENGTH_LONG).show();
+
 
     });
   }
