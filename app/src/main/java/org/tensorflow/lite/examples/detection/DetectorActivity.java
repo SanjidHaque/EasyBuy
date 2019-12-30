@@ -59,25 +59,18 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private MultiBoxTracker tracker;
   private BorderedText borderedText;
 
-
-
   ArrayList<String> Products = new ArrayList<String>();
-
   ListView ProductListView;
-
   ArrayAdapter ProductsAdapter;
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
 
     ProductListView = findViewById(R.id.productNamesListView);
-
     ProductsAdapter = new ArrayAdapter<String>(
             this,
             android.R.layout.simple_dropdown_item_1line,
             Products);
-
-
     ProductListView.setAdapter(ProductsAdapter);
 
     final float textSizePx =
@@ -151,16 +144,19 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         return;
       }
 
-      int productPrice = ((int) (Math.random() * (10000 - 500)) );
+      int productPrice = ((int) (Math.random() * (10000 - 500)));
+      String productPriceInString;
 
-      String productPriceInString = String.valueOf(productPrice);
-      String product = productName + " " + productPriceInString;
+      if (productName.equals("person")) {
+        productPriceInString = "person can't be bought";
+      } else {
+        productPriceInString = productPrice + "$";
+      }
 
+      String product = productName + "   " + productPriceInString;
       Products.add(product);
       ProductsAdapter.notifyDataSetChanged();
-
       Toast.makeText(getApplicationContext(),productName+" is added to cart.",Toast.LENGTH_LONG).show();
-
 
     });
   }
