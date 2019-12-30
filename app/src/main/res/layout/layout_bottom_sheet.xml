@@ -195,7 +195,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ShoppingCartLogo"
+            android:src="@drawable/shopping_cart_logo"
             android:layout_gravity="center"
             />
 
