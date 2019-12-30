@@ -179,8 +179,13 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
 
             runOnUiThread(() -> {
-              ProductNames.add(results.get(0).getTitle());
-              Adapter.notifyDataSetChanged();
+
+              String newProductName = results.get(0).getTitle();
+              if(!ProductNames.contains(newProductName)){
+                ProductNames.add(newProductName);
+                Adapter.notifyDataSetChanged();
+              }
+
             });
 
 
