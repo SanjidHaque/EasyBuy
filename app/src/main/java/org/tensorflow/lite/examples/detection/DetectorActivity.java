@@ -10,11 +10,13 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +63,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   ArrayList<String> Products = new ArrayList<String>();
   ListView ProductListView;
+  TextView CartAmountTextView;
   ArrayAdapter ProductsAdapter;
+
+
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -155,7 +160,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       String productPriceInString;
 
       if (productName.equals("person")) {
-        productPriceInString = "This can't be bought";
+        productPriceInString = "can't be bought";
       } else {
         productPriceInString = productPrice + "$";
       }
@@ -163,10 +168,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
       String product = productName + " " + productPriceInString;
       Products.add(product);
+      updateCartAmount();
       ProductsAdapter.notifyDataSetChanged();
       Toast.makeText(getApplicationContext(),productName+" is added to cart.",Toast.LENGTH_LONG).show();
 
     });
+  }
+
+  private void updateCartAmount() {
+    CartAmountTextView = findViewById(R.id.cartAmountTextView);
+    CartAmountTextView.setText(String.valueOf(Products.size()) + "(s)");
   }
 
 
@@ -205,8 +216,8 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
             addNewProduct(results.get(0).getTitle());
 
-            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
+            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
             cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
             final Canvas canvas = new Canvas(cropCopyBitmap);
             final Paint paint = new Paint();
