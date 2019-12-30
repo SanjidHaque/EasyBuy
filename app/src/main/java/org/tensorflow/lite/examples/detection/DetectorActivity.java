@@ -140,7 +140,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private void addNewProduct(String productName) {
     runOnUiThread(() -> {
 
-      if(Products.contains(productName)){
+      String extractedProductName = "";
+
+      for(int a_i=0; a_i<=productName.length(); a_i++ ){
+        if(productName.charAt(a_i) != ' '){
+          extractedProductName+=productName.charAt(a_i);
+        }
+      }
+
+      if(Products.contains(extractedProductName)){
         return;
       }
 
