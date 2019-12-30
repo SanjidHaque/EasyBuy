@@ -29,10 +29,6 @@ import org.tensorflow.lite.examples.detection.tflite.Classifier;
 import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIModel;
 import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
 
-/**
- * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
- * objects.
- */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
   private static final Logger LOGGER = new Logger();
 
@@ -69,28 +65,21 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private BorderedText borderedText;
 
-  //
-    ArrayList<String> ProductNames = new ArrayList<String>(){{
-      add("Laptop");
-      add("Mobile");
-      add("Tablet");
-      add("Keyboard");
+  ArrayList<String> ProductNames = new ArrayList<String>();
+  ListView ProductNamesListView;
+  ArrayAdapter Adapter;
 
-  }};
 
-    ListView ProductNamesListView;
-    ArrayAdapter Adapter;
-
-  //
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
 
-    //
     ProductNamesListView = findViewById(R.id.productNamesListView);
-    Adapter = new ArrayAdapter(this,android.R.layout.simple_dropdown_item_1line,ProductNames);
+    Adapter = new ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            ProductNames);
     ProductNamesListView.setAdapter(Adapter);
-    //
 
     final float textSizePx =
         TypedValue.applyDimension(
@@ -188,10 +177,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             final long startTime = SystemClock.uptimeMillis();
             final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
 
-            //
-            ProductNames.add(results.get(0).getTitle());
-            //Adapter.notifyDataSetChanged();
-            //
+
+            runOnUiThread(() -> {
+              ProductNames.add(results.get(0).getTitle());
+              Adapter.notifyDataSetChanged();
+            });
+
 
             lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
