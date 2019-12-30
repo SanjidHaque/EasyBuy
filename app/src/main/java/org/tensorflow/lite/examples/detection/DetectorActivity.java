@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+
 import org.tensorflow.lite.examples.detection.customview.OverlayView;
 import org.tensorflow.lite.examples.detection.customview.OverlayView.DrawCallback;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
@@ -46,28 +48,28 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private static final float TEXT_SIZE_DIP = 10;
   OverlayView trackingOverlay;
   private Integer sensorOrientation;
-
   private Classifier detector;
-
   private long lastProcessingTimeMs;
   private Bitmap rgbFrameBitmap = null;
   private Bitmap croppedBitmap = null;
   private Bitmap cropCopyBitmap = null;
-
   private boolean computingDetection = false;
-
   private long timestamp = 0;
-
   private Matrix frameToCropTransform;
   private Matrix cropToFrameTransform;
-
   private MultiBoxTracker tracker;
-
   private BorderedText borderedText;
 
+
+
   ArrayList<String> ProductNames = new ArrayList<String>();
+  ArrayList<Integer> ProductPrices = new ArrayList<Integer>();
+
   ListView ProductNamesListView;
-  ArrayAdapter Adapter;
+  ListView ProductPricesListView;
+
+  ArrayAdapter ProductNamesAdapter;
+  ArrayAdapter ProductPricesAdapter;
 
 
 
@@ -75,11 +77,19 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   public void onPreviewSizeChosen(final Size size, final int rotation) {
 
     ProductNamesListView = findViewById(R.id.productNamesListView);
-    Adapter = new ArrayAdapter<String>(
+    ProductPricesListView = findViewById(R.id.productPriceListView);
+
+    ProductNamesAdapter = new ArrayAdapter<String>(
             this,
             android.R.layout.simple_dropdown_item_1line,
             ProductNames);
-    ProductNamesListView.setAdapter(Adapter);
+    ProductPricesAdapter = new ArrayAdapter<Integer>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            ProductPrices);
+
+    ProductNamesListView.setAdapter(ProductNamesAdapter);
+    ProductPricesListView.setAdapter(ProductPricesAdapter);
 
     final float textSizePx =
         TypedValue.applyDimension(
@@ -144,6 +154,24 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
   }
 
+
+  private void addNewProduct(String productName) {
+    runOnUiThread(() -> {
+
+      if(ProductNames.contains(productName)){
+        return;
+      }
+
+      ProductNames.add(productName);
+      ProductNamesAdapter.notifyDataSetChanged();
+      int productPrice = (int) (Math.random() * (10000 - 500));
+      ProductPrices.add(productPrice);
+      ProductPricesAdapter.notifyDataSetChanged();
+
+    });
+  }
+
+
   @Override
   protected void processImage() {
     ++timestamp;
@@ -177,17 +205,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             final long startTime = SystemClock.uptimeMillis();
             final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
 
-
-            runOnUiThread(() -> {
-
-              String newProductName = results.get(0).getTitle();
-              if(!ProductNames.contains(newProductName)){
-                ProductNames.add(newProductName);
-                Adapter.notifyDataSetChanged();
-              }
-
-            });
-
+            addNewProduct(results.get(0).getTitle());
 
             lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
