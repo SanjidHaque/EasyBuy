@@ -142,15 +142,32 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
       String extractedProductName = "";
 
-      for(int a_i=0; a_i<=productName.length(); a_i++ ){
-        if(productName.charAt(a_i) != ' '){
-          extractedProductName+=productName.charAt(a_i);
+      for(int a_i=0; a_i<productName.length(); a_i++ ){
+        if(productName.charAt(a_i) == ' '){
+          break;
         }
+        extractedProductName+=productName.charAt(a_i);
       }
 
-      if(Products.contains(extractedProductName)){
-        return;
+      String extractedSecondProductName="", tempProduct;
+      for(int a_i=0; a_i<Products.size(); a_i++ ){
+
+        tempProduct = Products.get(a_i);
+
+        for(int b_i=0; b_i<tempProduct.length(); b_i++ ){
+          if(tempProduct.charAt(a_i) == ' '){
+            break;
+          }
+          extractedSecondProductName+=tempProduct.charAt(a_i);
+        }
+
+        if(extractedProductName==extractedSecondProductName) return;
+
       }
+
+//      if(Products.contains(extractedProductName)){
+//        return;
+//      }
 
       int productPrice = ((int) (Math.random() * (10000 - 500)));
       String productPriceInString;
