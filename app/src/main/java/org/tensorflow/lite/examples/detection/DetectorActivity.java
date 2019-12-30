@@ -139,29 +139,28 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private void addNewProduct(String productName) {
     runOnUiThread(() -> {
+      ArrayList extractedProducts = new ArrayList<String>();
 
-      String extractedProductName = "";
-
-      for(int a_i=0; a_i<=productName.length(); a_i++ ){
-        if(productName.charAt(a_i) != ' '){
-          extractedProductName+=productName.charAt(a_i);
-        }
+      for (String product : Products) {
+        String[] extractedProductNames = product.split(" ", 2);
+        extractedProducts.add(extractedProductNames[0]);
       }
 
-      if(Products.contains(extractedProductName)){
+      if(extractedProducts.contains(productName)){
         return;
       }
+
 
       int productPrice = ((int) (Math.random() * (10000 - 500)));
       String productPriceInString;
 
       if (productName.equals("person")) {
-        productPriceInString = "person can't be bought";
+        productPriceInString = "This can't be bought";
       } else {
         productPriceInString = productPrice + "$";
       }
 
-      String product = productName + "   " + productPriceInString;
+      String product = productName + " " + productPriceInString;
       Products.add(product);
       ProductsAdapter.notifyDataSetChanged();
       Toast.makeText(getApplicationContext(),productName+" is added to cart.",Toast.LENGTH_LONG).show();
